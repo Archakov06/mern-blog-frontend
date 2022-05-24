@@ -1,5 +1,7 @@
 import React from "react";
-import { Button, Paper, TextField } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 import SimpleMDE from "react-simplemde-editor";
 
 import "easymde/dist/easymde.min.css";

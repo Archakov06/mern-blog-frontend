@@ -6,10 +6,15 @@ $blue: #4361ee;
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: 15px;
+  position: relative;
 
   &:hover {
     border: 1px solid $blue;
     box-shadow: 0 0 0 1px $blue;
+
+    .editButtons {
+      opacity: 1;
+    }
   }
 
   &Full {
@@ -107,4 +112,47 @@ $blue: #4361ee;
       margin-right: 5px;
     }
   }
+}
+
+.skeleton {
+  background-color: #fff;
+  border: 1px solid #dedede;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 15px;
+
+  &Content {
+    padding: 20px;
+  }
+
+  &Info {
+    margin-left: 50px;
+  }
+}
+
+.skeletonUser {
+  display: flex;
+
+  &Details {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.skeletonTags {
+  display: flex;
+
+  span {
+    margin-right: 15px;
+  }
+}
+
+.editButtons {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 10px;
+  opacity: 0;
+  transition: all 0.15s ease-in-out;
 }

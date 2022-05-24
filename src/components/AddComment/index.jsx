@@ -3,9 +3,10 @@ import React from "react";
 import styles from "./AddComment.module.scss";
 
 import TextField from "@mui/material/TextField";
-import { Avatar, Button } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
 
-export const AddComment = () => {
+export const Index = () => {
   return (
     <>
       <div className={styles.root}>
