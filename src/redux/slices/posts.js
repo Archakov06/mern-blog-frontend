@@ -7,52 +7,63 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
 });
 
 export const fetchTags = createAsyncThunk('posts/fetchTags', async () => {
-  const { data } = await axios.get('/posts/tags');
+  const { data } = await axios.get('/tags');
   return data;
 });
 
+export const fetchRemovePost = createAsyncThunk('posts/fetchRemovePost', async (id) =>
+  axios.delete(`/posts/${id}`),
+);
+
 const initialState = {
-  posts: [],
-  tags: [],
-  postStatus: 'loading',
-  tagStatus: 'loading',
+  posts: {
+    items: [],
+    status: 'loading',
+  },
+  tags: {
+    items: [],
+    status: 'loading',
+  },
 };
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    removePost: (state, action) => {
-      state.posts = state.posts.filter((obj) => obj._id !== action.payload);
-    },
-  },
+  reducers: {},
   extraReducers: {
+    // Получение статей
+    [fetchPosts.pending]: (state) => {
+      state.posts.items = [];
+      state.posts.status = 'loading';
+    },
     [fetchPosts.fulfilled]: (state, action) => {
-      state.posts = action.payload;
-      state.postStatus = 'loaded';
+      state.posts.items = action.payload;
+      state.posts.status = 'loaded';
     },
-    [fetchPosts.pending]: (state, action) => {
-      state.posts = [];
-      state.postStatus = 'loading';
+    [fetchPosts.rejected]: (state) => {
+      state.posts.items = [];
+      state.posts.status = 'error';
     },
-    [fetchPosts.rejected]: (state, action) => {
-      state.posts = [];
-      state.postStatus = 'error';
+
+    // Получение тегов
+    [fetchTags.pending]: (state) => {
+      state.tags.items = [];
+      state.tags.status = 'loading';
     },
     [fetchTags.fulfilled]: (state, action) => {
-      state.tags = action.payload;
-      state.tagStatus = 'loaded';
+      state.tags.items = action.payload;
+      state.tags.status = 'loaded';
     },
-    [fetchTags.pending]: (state, action) => {
-      state.tags = [];
-      state.tagStatus = 'loading';
+    [fetchTags.rejected]: (state) => {
+      state.tags.items = [];
+      state.tags.status = 'error';
     },
-    [fetchTags.rejected]: (state, action) => {
-      state.tags = [];
-      state.tagStatus = 'error';
+
+    // Удаление статьи
+    [fetchRemovePost.pending]: (state, action) => {
+      state.posts.items = state.posts.items.filter((obj) => obj._id !== action.meta.arg);
     },
   },
 });
 
 export const postsReducer = postsSlice.reducer;
-export const { removePost } = postsSlice.actions;

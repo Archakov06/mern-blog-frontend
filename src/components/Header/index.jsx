@@ -1,19 +1,21 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Button from '@mui/material/Button';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
 
 import styles from './Header.module.scss';
 import Container from '@mui/material/Container';
-import { resetUserData } from '../../redux/slices/auth';
+import { logout, selectIsAuth } from '../../redux/slices/auth';
 
 export const Header = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.data);
+  const isAuth = useSelector(selectIsAuth);
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    dispatch(resetUserData());
+  const onClickLogout = () => {
+    if (window.confirm('Вы действительно хотите выйти?')) {
+      dispatch(logout());
+      window.localStorage.removeItem('token');
+    }
   };
 
   return (
@@ -24,12 +26,12 @@ export const Header = () => {
             <div>ARCHAKOV BLOG</div>
           </Link>
           <div className={styles.buttons}>
-            {user ? (
+            {isAuth ? (
               <>
-                <Link to="/posts/create">
+                <Link to="/add-post">
                   <Button variant="contained">Написать статью</Button>
                 </Link>
-                <Button onClick={logout} variant="contained" color="error">
+                <Button onClick={onClickLogout} variant="contained" color="error">
                   Выйти
                 </Button>
               </>

@@ -7,16 +7,15 @@ import Grid from '@mui/material/Grid';
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
-
 import { fetchPosts, fetchTags } from '../redux/slices/posts';
 
 export const Home = () => {
-  const { posts, postStatus, tags, tagStatus } = useSelector((state) => state.posts);
-  const user = useSelector((state) => state.auth.data);
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.auth.data);
+  const { posts, tags } = useSelector((state) => state.posts);
 
-  const postsLoading = postStatus === 'loading';
-  const tagsLoading = tagStatus === 'loading';
+  const isPostsLoading = posts.status === 'loading';
+  const isTagsLoading = tags.status === 'loading';
 
   React.useEffect(() => {
     dispatch(fetchPosts());
@@ -31,19 +30,26 @@ export const Home = () => {
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
-          {(postsLoading ? [...Array(5)] : posts).map((obj, index) => (
-            <Post
-              key={index}
-              {...obj}
-              user={obj && obj.user}
-              commentsCount={3}
-              isLoading={postsLoading}
-              isEditable={obj && user ? user._id === obj.user._id : false}
-            />
-          ))}
+          {(isPostsLoading ? [...Array(5)] : posts.items).map((obj, index) =>
+            isPostsLoading ? (
+              <Post key={index} isLoading={true} />
+            ) : (
+              <Post
+                id={obj._id}
+                title={obj.title}
+                imageUrl={obj.imageUrl ? `${process.env.REACT_APP_API_URL}${obj.imageUrl}` : ''}
+                user={obj.user}
+                createdAt={obj.createdAt}
+                viewsCount={obj.viewsCount}
+                commentsCount={3}
+                tags={obj.tags}
+                isEditable={userData?._id === obj.user._id}
+              />
+            ),
+          )}
         </Grid>
         <Grid xs={4} item>
-          <TagsBlock items={tags} isLoading={tagsLoading} />
+          <TagsBlock items={tags.items} isLoading={isTagsLoading} />
           <CommentsBlock
             items={[
               {
