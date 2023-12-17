@@ -20,6 +20,6 @@ function App() {
     );
 }
 
-//
+// FIXME[EASY]: translate App from RU to ENG;
 
 export default App;
