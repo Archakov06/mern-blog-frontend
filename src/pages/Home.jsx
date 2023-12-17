@@ -27,7 +27,6 @@ export const Home = (props) => {
         }
     }, [])
 
-    console.log(posts);
 
     return (
         <>
