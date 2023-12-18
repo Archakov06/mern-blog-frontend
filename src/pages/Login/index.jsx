@@ -28,18 +28,25 @@ export const Login = () => {
 
     });
     console.log('IS auth?', isAuth);
+
     if (isAuth) {
+        // if the user is authorized it will be redirected to Home;
         return <Navigate to={'/'} />
     }
 
 
-    const onSubmit = (values) => {
-        console.log(values);
+    const onSubmit = async (values) => {
+        const data = await dispatch(getAuthData(values));
 
-        dispatch(getAuthData(values));
+        if (!data.payload) {
+            return alert('LOGIN failed for some reason whatsoever');
+        }
+
+        if ('token' in data.payload) {
+            window.localStorage.setItem('token', data.payload.token);
+        }
+
     }
-
-
 
     return (
         <Paper classes={{root: styles.root}}>

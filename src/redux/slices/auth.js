@@ -8,6 +8,13 @@ export const getAuthData = createAsyncThunk('auth/getUserData',
         return data;
     });
 
+export const getAuthMe = createAsyncThunk('auth/getAuthMe',
+    // A server request to confirm that we are actually logged in:
+    async () => {
+        const { data } = await axios.get('/auth/me');
+        return data;
+    });
+
 // WRITING THE INITIAL STATE:
 const initialState = {
     data: null,
@@ -21,6 +28,14 @@ const authSlice = createSlice(
     {
         name:'auth',
         initialState,
+
+        reducers: {
+            logout: (state) => {
+                // LOG-out is done by "nullifiing login data"
+                state.data = null;
+            }
+        },
+
         extraReducers: {
             [getAuthData.pending]: (state) => {
                 state.status = 'loading';
@@ -34,6 +49,19 @@ const authSlice = createSlice(
                 state.status = 'error';
                 state.data = null;
             },
+
+            [getAuthMe.pending]: (state) => {
+                state.status = 'loading';
+                state.data = null;
+            },
+            [getAuthMe.fulfilled]: (state, action) => {
+                state.status = 'loaded';
+                state.data = action.payload;
+            },
+            [getAuthMe.rejected]: (state) => {
+                state.status = 'error';
+                state.data = null;
+            },
         }
     }
 );
@@ -43,3 +71,5 @@ export const selectIsAuth = state => Boolean(state.auth.data);
 // Boolean() returns true if provided param RECEIVES any data. Else, stays false;
 
 export const authReducer = authSlice.reducer;
+
+export const { logout } = authSlice.actions;
