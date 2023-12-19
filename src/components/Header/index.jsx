@@ -12,9 +12,9 @@ export const Header = () => {
     const isAuth = useSelector(selectIsAuth);
 
     const onClickLogout = () => {
-
         if (window.confirm("Are you sure you want to log out? ")) {
             dispatch(logout());
+            window.localStorage.removeItem('token'); // we're deleting the token so when reloading the page, the cookie is gone;
         }
     };
 
@@ -28,20 +28,20 @@ export const Header = () => {
                     <div className={styles.buttons}>
                         {isAuth ? (
                             <>
-                                <Link to="/posts/create">
-                                    <Button variant="contained">Написать статью</Button>
+                                <Link to="/add-post">
+                                    <Button variant="contained">Create an article</Button>
                                 </Link>
                                 <Button onClick={onClickLogout} variant="contained" color="error">
-                                    Выйти
+                                    Log Out
                                 </Button>
                             </>
                         ) : (
                             <>
                                 <Link to="/login">
-                                    <Button variant="outlined">Войти</Button>
+                                    <Button variant="outlined">Log In</Button>
                                 </Link>
                                 <Link to="/register">
-                                    <Button variant="contained">Создать аккаунт</Button>
+                                    <Button variant="contained">Create an account</Button>
                                 </Link>
                             </>
                         )}

@@ -15,6 +15,15 @@ export const getAuthMe = createAsyncThunk('auth/getAuthMe',
         return data;
     });
 
+export const requestRegistration = createAsyncThunk('auth/registration',
+    // A server request to create a new account with
+
+    // FIXME[BUG]: After registration, when clicking on a tag on Home we get logged out. Idk why;
+    async (params) => {
+        const { data } = await axios.post('/auth/register', params);
+        return data;
+    });
+
 // WRITING THE INITIAL STATE:
 const initialState = {
     data: null,
@@ -37,6 +46,7 @@ const authSlice = createSlice(
         },
 
         extraReducers: {
+            // REQUEST AUTH statuses:
             [getAuthData.pending]: (state) => {
                 state.status = 'loading';
                 state.data = null;
@@ -50,6 +60,7 @@ const authSlice = createSlice(
                 state.data = null;
             },
 
+            // REQUEST ME statuses
             [getAuthMe.pending]: (state) => {
                 state.status = 'loading';
                 state.data = null;
@@ -59,6 +70,20 @@ const authSlice = createSlice(
                 state.data = action.payload;
             },
             [getAuthMe.rejected]: (state) => {
+                state.status = 'error';
+                state.data = null;
+            },
+
+            // REQUEST REGISTRATION statuses:
+            [requestRegistration.pending]: (state) => {
+                state.status = 'loading';
+                state.data = null;
+            },
+            [requestRegistration.fulfilled]: (state, action) => {
+                state.status = 'loaded';
+                state.data = action.payload;
+            },
+            [requestRegistration.rejected]: (state) => {
                 state.status = 'error';
                 state.data = null;
             },

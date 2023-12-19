@@ -9,6 +9,7 @@ import {Link} from "react-router-dom";
 import styles from './Post.module.scss';
 import {UserInfo} from '../UserInfo';
 import {PostSkeleton} from './Skeleton';
+import {useDispatch, useSelector} from "react-redux";
 
 export const Post = ({
                          id,

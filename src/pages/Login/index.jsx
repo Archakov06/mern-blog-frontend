@@ -11,23 +11,24 @@ import {Navigate} from 'react-router-dom';
 
 export const Login = () => {
 
-    const isAuth = useSelector(selectIsAuth)
-
+    const isAuth = useSelector(selectIsAuth);
     const dispatch = useDispatch();
+
     // REACT useForm HOOK:
-    const {register,
+    const {
+        register,
         handleSubmit,
         setError,
-        formState: {errors, isValid} } = useForm({
+        formState: {errors, isValid}
+    } = useForm({
         defaultValues: {
             email:'viorel.harabaru@gmail.com',
             password:'standart1'
         },
         mode: 'all'
-        //we might have to change this to onChange if the form bugs out;
-
+        //we might have to change this to onChange if the form bugs out
     });
-    console.log('IS auth?', isAuth);
+
 
     if (isAuth) {
         // if the user is authorized it will be redirected to Home;
@@ -45,7 +46,6 @@ export const Login = () => {
         if ('token' in data.payload) {
             window.localStorage.setItem('token', data.payload.token);
         }
-
     }
 
     return (
@@ -55,7 +55,7 @@ export const Login = () => {
                 Login into your account
             </Typography>
 
-            <form action="" onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
                     className={styles.field}
                     label="E-Mail"

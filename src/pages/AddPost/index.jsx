@@ -3,13 +3,21 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import SimpleMDE from 'react-simplemde-editor';
-
 import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
+import {useSelector} from "react-redux";
+import {selectIsAuth} from "../../redux/slices/auth";
+import {Navigate} from "react-router-dom";
 
 export const AddPost = () => {
+    const isAuth = useSelector(selectIsAuth);
     const imageUrl = '';
+
+    // creating a local state for the future content;
+    const [title, setTitle] = React.useState('');
     const [value, setValue] = React.useState('');
+    const [tags, setTags] = React.useState('');
+    const inputFileRef = React.useRef(null);
 
     const handleChangeFile = () => {
     };
@@ -26,7 +34,7 @@ export const AddPost = () => {
             spellChecker: false,
             maxHeight: '400px',
             autofocus: true,
-            placeholder: 'Введите текст...',
+            placeholder: "Don't be shy, tell us what you think... ",
             status: false,
             autosave: {
                 enabled: true,
@@ -36,15 +44,21 @@ export const AddPost = () => {
         [],
     );
 
+    if (!window.localStorage.getItem('token') && !isAuth) {
+        // FIXME[SUPER EASY]: this might be refactored as UTILITY; We use the same code in Login/index.jsx as well;
+        // if the user is authorized it will be redirected to Home;
+        return <Navigate to={'/'} />
+    }
+
     return (
         <Paper style={{padding: 30}}>
-            <Button variant="outlined" size="large">
+            <Button onClick={() => inputFileRef.current.click()} variant="outlined" size="large">
                 Загрузить превью
             </Button>
-            <input type="file" onChange={handleChangeFile} hidden/>
+            <input type="file" ref={inputFileRef} onChange={handleChangeFile} hidden/>
             {imageUrl && (
                 <Button variant="contained" color="error" onClick={onClickRemoveImage}>
-                    Удалить
+                    Delete
                 </Button>
             )}
             {imageUrl && (
@@ -54,15 +68,24 @@ export const AddPost = () => {
             <br/>
             <TextField
                 classes={{root: styles.title}}
-                variant="standard"
-                placeholder="Заголовок статьи..."
+                    variant="standard"
+                placeholder="Enter title..."
+                value={title}
+                onChange={e => setTitle(e.target.value)}
                 fullWidth
             />
-            <TextField classes={{root: styles.tags}} variant="standard" placeholder="Тэги" fullWidth/>
+            <TextField
+                classes={{root: styles.tags}}
+                variant="standard"
+                placeholder="Tags"
+                value={tags}
+                onChange={e => setTags(e.target.value)}
+                fullWidth/>
+
             <SimpleMDE className={styles.editor} value={value} onChange={onChange} options={options}/>
             <div className={styles.buttons}>
                 <Button size="large" variant="contained">
-                    Опубликовать
+                    Publish
                 </Button>
                 <a href="/">
                     <Button size="large">Отмена</Button>
