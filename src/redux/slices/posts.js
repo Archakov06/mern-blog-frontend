@@ -1,5 +1,6 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import axios from '../../axios';
+import instance from "../../axios";
 
 // WRITING THE INITIAL STATE:
 const initialState = {
@@ -31,6 +32,12 @@ export const getTags = createAsyncThunk("posts/getTags", async () => {
         return data;
 });
 
+export const requestRemovePost = createAsyncThunk('posts/requestRemovePost',
+    async (id) => {
+        await instance.delete(`/posts/${id}`);
+    }
+);
+
 const postsSlice = createSlice(
     {
         name: "posts",
@@ -38,6 +45,8 @@ const postsSlice = createSlice(
         reducers: {},
 
         extraReducers: {
+
+            // Getting posts:
             [getPosts.pending]: (state) => {
                 state.posts.items = []
                 state.posts.status = 'loading';
@@ -51,6 +60,7 @@ const postsSlice = createSlice(
                 state.posts.status = 'ERROR occurred when loading';
             },
 
+            // Getting tags:
             [getTags.pending]: (state) => {
                 state.tags.items = []
                 state.tags.status = 'loading';
@@ -62,6 +72,11 @@ const postsSlice = createSlice(
             [getTags.rejected]: (state) => {
                 state.tags.items = []
                 state.tags.status = 'ERROR occurred when loading';
+            },
+
+            // Requesting post deletion:
+            [requestRemovePost.pending]: (state, action) => {
+                state.posts.items = state.posts.items.filter(obj => obj._id !== action.meta.arg);
             }
         }
     }

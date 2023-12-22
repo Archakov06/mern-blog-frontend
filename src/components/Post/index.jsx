@@ -5,11 +5,14 @@ import DeleteIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import CommentIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
-import {Link} from "react-router-dom";
+import {Link, useNavigate, Navigate} from "react-router-dom";
 import styles from './Post.module.scss';
 import {UserInfo} from '../UserInfo';
 import {PostSkeleton} from './Skeleton';
 import {useDispatch, useSelector} from "react-redux";
+import instance from "../../axios";
+import {createAsyncThunk} from "@reduxjs/toolkit";
+import {requestRemovePost} from "../../redux/slices/posts";
 
 export const Post = ({
                          id,
@@ -25,11 +28,17 @@ export const Post = ({
                          isLoading,
                          isEditable,
                      }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     if (isLoading) {
         return <PostSkeleton/>;
     }
 
     const onClickRemove = () => {
+        if (window.confirm("Are you sure you want to delete this post? ")) {
+            dispatch(requestRemovePost(id));
+        }
     };
 
     return (

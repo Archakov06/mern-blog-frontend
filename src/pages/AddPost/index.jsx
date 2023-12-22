@@ -7,7 +7,7 @@ import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 import {useSelector} from "react-redux";
 import {selectIsAuth} from "../../redux/slices/auth";
-import { useNavigate, Navigate} from "react-router-dom";
+import {useNavigate, Navigate} from "react-router-dom";
 import instance from "../../axios";
 import {see} from "../../utilities/myUtils";
 
@@ -24,6 +24,8 @@ export const AddPost = () => {
     const inputFileRef = React.useRef(null);
 
     const handleChangeFile = async (event) => {
+
+         // FIXME: MAJOR BUG: when adding a text, it gets duplicated;
         try {
             // preparing the file:
             const formData = new FormData();
@@ -31,7 +33,7 @@ export const AddPost = () => {
             formData.append('image', file);
 
             // making the post network request with the payload:
-            const { data } = await instance.post('/upload', formData);
+            const {data} = await instance.post('/upload', formData);
 
             // setting the image url as per the response we receive in data:
             setImageUrl(data.url);
@@ -42,7 +44,6 @@ export const AddPost = () => {
         }
     };
     const onClickRemoveImage = () => {
-
         if (window.confirm("Are you sure you want to delete this picture? ")) {
             // if user confirms, we nullify the image address:
             setImageUrl('');
@@ -50,37 +51,34 @@ export const AddPost = () => {
     };
 
     const onSubmit = async () => {
+
         try {
             // we're indicating that the process has begun and the request is loading:
             setLoading(true);
 
             // Indicating the payload. It is mapped to the data that server is expecting:
             const fields = {
-                title,
-                text,
-                tags: tags.split(','),
-                imageUrl
+                title: title,
+                tags: tags.split(","),
+                text: text,
+                imageUrl: imageUrl
             }
 
-
-
             // making the post server request with the payload: fields;
-            const { data } = await instance.post('/posts', fields);
+            const {data} = await instance.post('/posts', fields);
 
-            // navigating to the freshed created article:
+            // navigating to the fresh created article:
             const newPostId = data._id;
             navigate(`/posts/${newPostId}`);
-
-        }
-        catch (e) {
+        } catch (e) {
             alert('Some error has occurred when SENDING the article to the server. Check console!');
-            see(e)
+            see(e);
         }
     }
 
     // IMPORTANT stuff for SimpleMDE library (redactor)
-    const onChange = React.useCallback((text) => {
-        setText(text);
+    const onChange = React.useCallback((value) => {
+        setText(value);
     }, []);
 
     const options = React.useMemo(
@@ -101,7 +99,7 @@ export const AddPost = () => {
     if (!window.localStorage.getItem('token') && !isAuth) {
          // FIXME[SUPER EASY]: this might be refactored as UTILITY; We use the same code in Login/index.jsx as well;
         // if the user is authorized it will be redirected to Home;
-        return <Navigate to={'/'} />
+        return <Navigate to={'/'}/>
     }
 
     return (
@@ -118,12 +116,11 @@ export const AddPost = () => {
                     </Button>
                 </>
             )}
-
             <br/>
             <br/>
             <TextField
                 classes={{root: styles.title}}
-                    variant="standard"
+                variant="standard"
                 placeholder="Enter title..."
                 value={title}
                 onChange={e => setTitle(e.target.value)}
@@ -132,13 +129,13 @@ export const AddPost = () => {
             <TextField
                 classes={{root: styles.tags}}
                 variant="standard"
-                placeholder="Tags"
+                placeholder="Please separate your tags with: , "
                 value={tags}
                 onChange={e => setTags(e.target.value)}
                 fullWidth
             />
 
-            <SimpleMDE className={styles.editor} value={text} onChange={onChange} options={options}/>
+            <SimpleMDE className={styles.editor} value={text} onChange={onChange} options/>
 
             <div className={styles.buttons}>
                 <Button
@@ -149,7 +146,7 @@ export const AddPost = () => {
                     Publish
                 </Button>
                 <a href="/">
-                    <Button size="large">Отмена</Button>
+                    <Button size="large">Cancel</Button>
                 </a>
             </div>
         </Paper>
