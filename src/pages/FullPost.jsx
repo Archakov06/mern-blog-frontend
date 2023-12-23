@@ -53,11 +53,12 @@ export const FullPost = () => {
                 <p>
 
                     <ReactMarkdown children={data.text}/>
+                    {/*{data.text}*/}
 
                     {   // FIXME: BUG; For some reason some keywords are highlighted when adding the text.
                         // this is definitely not the right behavior;
                         // We might wanna add this line bellow instead of the one above;
-                        /*{data.text}*/
+                       // {data.text}
                     }
 
                 </p>

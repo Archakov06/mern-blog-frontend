@@ -7,13 +7,17 @@ import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 import {useSelector} from "react-redux";
 import {selectIsAuth} from "../../redux/slices/auth";
-import {useNavigate, Navigate} from "react-router-dom";
+import {useNavigate, Navigate, useParams} from "react-router-dom";
 import instance from "../../axios";
 import {see} from "../../utilities/myUtils";
 
 export const AddPost = () => {
+    // checking if a user is authenticated:
     const isAuth = useSelector(selectIsAuth);
+    // using a navigation hook to redirect where we need:
     const navigate = useNavigate();
+
+    const {id} = useParams();
 
     // creating a local state for the future content;
     const [title, setTitle] = React.useState('');
@@ -23,9 +27,11 @@ export const AddPost = () => {
     const [imageUrl, setImageUrl] = React.useState('');
     const inputFileRef = React.useRef(null);
 
+    const isEditing = Boolean(id);
+
     const handleChangeFile = async (event) => {
 
-         // FIXME: MAJOR BUG: when adding a text, it gets duplicated;
+        // FIXME: MAJOR BUG: when adding a text, it gets duplicated;
         try {
             // preparing the file:
             const formData = new FormData();
@@ -65,12 +71,17 @@ export const AddPost = () => {
             }
 
             // making the post server request with the payload: fields;
-            const {data} = await instance.post('/posts', fields);
+            const {data} = isEditing
+                ? await instance.patch(`/posts/${id}`, fields)
+                : await instance.post('/posts', fields)
+
+            // checking if we are CREATING or EDITING a post:
+            const newPostId = isEditing ? id : data._id;
 
             // navigating to the fresh created article:
-            const newPostId = data._id;
             navigate(`/posts/${newPostId}`);
-        } catch (e) {
+        }
+        catch (e) {
             alert('Some error has occurred when SENDING the article to the server. Check console!');
             see(e);
         }
@@ -79,6 +90,21 @@ export const AddPost = () => {
     // IMPORTANT stuff for SimpleMDE library (redactor)
     const onChange = React.useCallback((value) => {
         setText(value);
+    }, []);
+
+    React.useEffect(() => {
+        if (id) {
+            instance.get(`/posts/${id}`)
+                .then(({data}) => {
+                    setTitle(data.title);
+                    setTags(data.tags.join(','));
+                    setText(data.text);
+                    setImageUrl(data.imageUrl);
+                }).catch(err => {
+                see(err);
+                alert("An error occurred when getting a post!")
+            });
+        }
     }, []);
 
     const options = React.useMemo(
@@ -97,7 +123,7 @@ export const AddPost = () => {
     );
 
     if (!window.localStorage.getItem('token') && !isAuth) {
-         // FIXME[SUPER EASY]: this might be refactored as UTILITY; We use the same code in Login/index.jsx as well;
+        // FIXME[SUPER EASY]: this might be refactored as UTILITY; We use the same code in Login/index.jsx as well;
         // if the user is authorized it will be redirected to Home;
         return <Navigate to={'/'}/>
     }
@@ -143,7 +169,7 @@ export const AddPost = () => {
                     variant="contained"
                     onClick={onSubmit}
                 >
-                    Publish
+                    {isEditing ? 'Save' : 'Publish'}
                 </Button>
                 <a href="/">
                     <Button size="large">Cancel</Button>
