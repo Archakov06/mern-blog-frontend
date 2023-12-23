@@ -8,6 +8,7 @@ import {TagsBlock} from '../components/TagsBlock';
 import {CommentsBlock} from '../components/CommentsBlock';
 import axios from '../axios';
 import {getPosts, getTags} from "../redux/slices/posts";
+import {see} from "../utilities/myUtils";
 
 
 export const Home = (props) => {
@@ -22,19 +23,19 @@ export const Home = (props) => {
             dispatch(getPosts());
             dispatch(getTags());
         }
-        catch (error) {
-            console.log(error);
-        }
+        catch (err) { see(err); }
     }, []);
 
 
     return (
         <>
             <Tabs style={{marginBottom: 15}} value={0} aria-label="basic tabs example">
-                <Tab label="Новые"/>
-                <Tab label="Популярные"/>
+                <Tab label="New"/>
+                <Tab label="Popular"/>
             </Tabs>
+
             <Grid container spacing={4}>
+
                 <Grid xs={8} item>
                     {
                         (arePostsLoading ? [...Array(5)] : posts.items).map((obj, index) => arePostsLoading
@@ -57,7 +58,9 @@ export const Home = (props) => {
                 </Grid>
 
                 <Grid xs={4} item>
+
                     <TagsBlock items={tags.items} isLoading={areTagsLoading}/>
+
                     <CommentsBlock
                         items={[
                             {
@@ -77,6 +80,8 @@ export const Home = (props) => {
                         ]}
                         isLoading={false}
                     />
+
+
                 </Grid>
 
             </Grid>
