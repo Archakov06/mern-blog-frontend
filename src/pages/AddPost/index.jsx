@@ -31,7 +31,6 @@ export const AddPost = () => {
 
     const handleChangeFile = async (event) => {
 
-        // FIXME: MAJOR BUG: when adding a text, it gets duplicated;
         try {
             // preparing the file:
             const formData = new FormData();

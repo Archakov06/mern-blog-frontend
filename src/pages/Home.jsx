@@ -24,7 +24,9 @@ export const Home = (props) => {
             dispatch(getTags());
         }
         catch (err) { see(err); }
-    }, []);
+    }, [])
+
+
 
 
     return (

@@ -5,33 +5,64 @@ import {Index} from "../components/AddComment";
 import {CommentsBlock} from "../components/CommentsBlock";
 import instance from './../axios';
 import ReactMarkdown from "react-markdown";
+import {see} from "../utilities/myUtils";
+import {useDispatch, useSelector} from "react-redux";
+import {getAuthMe, selectIsAuth} from "../redux/slices/auth";
 
 
-export const FullPost = () => {
+export const FullPost = (props) => {
 
     // destructurization of object. getting ID:
     const {id} = useParams();
     const [data, setData] = React.useState();
     const [isLoading, setLoading] = React.useState(true);
+    const [authorizedUser, setAuthorizedUser] = React.useState('');
+    const dispatch = useDispatch();
+    const isAuth = useSelector(selectIsAuth);
 
 
-      // FIXME [EASY] (low priority): we might want to refactor this;
-     //  Network requests logic in a dumb component?
+    // FIXME [EASY] (low priority): we might want to refactor this;
+    //  Network requests logic in a dumb component?
     //  you can still use the effect but encapsulate that logic somewhere in a THUNK;
+    // NETWORK REQUEST TO GET THE FULL POST CONTENT:
     React.useEffect(() => {
         try {
             instance
                 .get(`/posts/${id}`)
-                .then( (res) => {
+                .then((res) => {
                     setData(res.data);
                     setLoading(false);
                 });
-        }
-        catch (e) {
+        } catch (e) {
             console.warn(e);
             alert("AN ERROR OCCURRED WHEN GETTING POST DATA");
         }
     }, []);
+
+    // NETWORK REQUEST TO GET DATA OF AUTHORIZED USER:
+    React.useEffect(() => {
+        const fetchAuthData = async () => {
+            try {
+                const action = await dispatch(getAuthMe());
+                const authData = action.payload;
+
+                if (Boolean(authData)) {
+                    setAuthorizedUser(authData.fullName);
+                }
+
+            } catch (error) {
+                see('Error:', error);
+            }
+        };
+
+          // FIXME: its better if WE TRIGGER THE getAuthMe() network request
+         //  ONLY if we know a user is authorized
+        // otherwise we're not wasting network resources
+        fetchAuthData();
+
+    }, []);
+
+
 
     if (isLoading) {
         return <Post isLoading={isLoading} isFullPost/>
@@ -53,12 +84,11 @@ export const FullPost = () => {
                 <p>
 
                     <ReactMarkdown children={data.text}/>
-                    {/*{data.text}*/}
 
                     {   // FIXME: BUG; For some reason some keywords are highlighted when adding the text.
                         // this is definitely not the right behavior;
                         // We might wanna add this line bellow instead of the one above;
-                       // {data.text}
+                        // {data.text}
                     }
 
                 </p>
@@ -67,25 +97,16 @@ export const FullPost = () => {
 
 
             <CommentsBlock
-                items={[
-                    {
-                        user: {
-                            fullName: "Вася Пупкин",
-                            avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-                        },
-                        text: "Это тестовый комментарий 555555",
-                    },
-                    {
-                        user: {
-                            fullName: "Иван Иванов",
-                            avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-                        },
-                        text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-                    },
-                ]}
+
+                items={data.comments} // the comments are fetched successfully
                 isLoading={false}
             >
-                <Index/>
+                <Index
+                    isAuth={isAuth}
+                    dbComments={data.comments}
+                    authorizedUser={authorizedUser}
+                    id={id}
+                />
             </CommentsBlock>
         </>
     );

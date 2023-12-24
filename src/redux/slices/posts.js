@@ -38,6 +38,8 @@ export const requestRemovePost = createAsyncThunk('posts/requestRemovePost',
     }
 );
 
+// export const postComment =
+
 const postsSlice = createSlice(
     {
         name: "posts",

@@ -10,7 +10,11 @@ import {Post} from "../Post";
 const TagPage = () => {
 
      // FIXME[MEDIUM]: we're doing a lot of stupid trimming here;
-    //  this should be done on the server's side;
+    //  this should be done on the server's side and be fixed beautifully on front-end;
+
+      // FIXME[HARD]: OPTIMIZATION
+     // we can't keep getting ALL THE posts - huge performance cost. A separate API is required to get posts by tag;
+    // all the filtrations and trimming stuff should be done on the server side;
 
     // Getting all the Data and setting up the Hooks:
     let {tag} = useParams(); // getting the tag from the URL
