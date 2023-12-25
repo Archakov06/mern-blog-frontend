@@ -16,9 +16,8 @@ export const getAuthMe = createAsyncThunk('auth/getAuthMe',
     });
 
 export const requestRegistration = createAsyncThunk('auth/registration',
-    // A server request to create a new account with
+    // A server request to create a new account with credentials
 
-    // FIXME[BUG]: After registration, when clicking on a tag on Home we get logged out. Idk why;
     async (params) => {
         const { data } = await axios.post('/auth/register', params);
         return data;
@@ -28,9 +27,6 @@ export const requestRegistration = createAsyncThunk('auth/registration',
 const initialState = {
     data: null,
     status: 'loading'
-    // FIXME[MEDIUM]
-    //  isAauth - we might wanna add this var as a variable in state.
-    // its some bullshit to have this locally here;
 }
 
 const authSlice = createSlice(

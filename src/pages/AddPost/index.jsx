@@ -122,9 +122,7 @@ export const AddPost = () => {
     );
 
     if (!window.localStorage.getItem('token') && !isAuth) {
-        // FIXME[SUPER EASY]: this might be refactored as UTILITY; We use the same code in Login/index.jsx as well;
-        // if the user is authorized it will be redirected to Home;
-        return <Navigate to={'/'}/>
+        return navigate('/')
     }
 
     return (
@@ -160,7 +158,10 @@ export const AddPost = () => {
                 fullWidth
             />
 
-            <SimpleMDE className={styles.editor} value={text} onChange={onChange} options/>
+            <SimpleMDE
+                className={styles.editor}
+                value={text}
+                onChange={onChange} options/>
 
             <div className={styles.buttons}>
                 <Button

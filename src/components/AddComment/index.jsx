@@ -8,14 +8,13 @@ import {useForm} from "react-hook-form";
 import {getAuthData} from "../../redux/slices/auth";
 import {useDispatch} from "react-redux";
 import instance from "../../axios";
+import {useNavigate} from "react-router-dom";
 
 export const Index = ({isAuth, dbComments, authorizedUser, id}) => {
 
     const [comments, setComments] = useState(dbComments);
+    const navigate = useNavigate();
 
-    if (dbComments) {
-        see(dbComments)
-    }
     //const dispatch = useDispatch();
     const token = localStorage.getItem('token')
 
@@ -41,6 +40,9 @@ export const Index = ({isAuth, dbComments, authorizedUser, id}) => {
             const payload = { comments: comments }
 
             const { data } = await instance.patch(`/posts/${id}/comments`, payload, {headers});
+
+            see(data);
+            navigate(`/posts/${id}`);
         }
         catch (e) { see(e) }
     }

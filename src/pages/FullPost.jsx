@@ -21,8 +21,8 @@ export const FullPost = (props) => {
     const isAuth = useSelector(selectIsAuth);
 
 
-    // FIXME [EASY] (low priority): we might want to refactor this;
-    //  Network requests logic in a dumb component?
+      // FIXME [EASY] (low priority): we might want to refactor this;
+     //  Network requests logic in a dumb component?
     //  you can still use the effect but encapsulate that logic somewhere in a THUNK;
     // NETWORK REQUEST TO GET THE FULL POST CONTENT:
     React.useEffect(() => {
@@ -77,19 +77,13 @@ export const FullPost = (props) => {
                 user={data.user}
                 createdAt={data.createdAt}
                 viewsCount={data.viewsCount}
-                commentsCount='undefined'
+                commentsCount={data.comments.length}
                 tags={data.tags}
                 isFullPost
             >
                 <p>
 
                     <ReactMarkdown children={data.text}/>
-
-                    {   // FIXME: BUG; For some reason some keywords are highlighted when adding the text.
-                        // this is definitely not the right behavior;
-                        // We might wanna add this line bellow instead of the one above;
-                        // {data.text}
-                    }
 
                 </p>
 

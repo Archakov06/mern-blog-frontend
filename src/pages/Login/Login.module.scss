@@ -1,6 +1,6 @@
 .root {
   width: 400px;
-  padding: 50px;
+  padding: 60px;
   border: 1px solid #dedede;
   margin: 50px auto;
 }
@@ -12,5 +12,13 @@
 .title {
   text-align: center !important;
   font-weight: bold !important;
-  margin-bottom: 30px !important;
+  margin-bottom: 10px !important;
+}
+
+.additionalText {
+  display: flex;
+  text-align: center !important;
+  // font-weight: bold !important;
+  margin-bottom: 15px !important;
+  color: gray;
 }

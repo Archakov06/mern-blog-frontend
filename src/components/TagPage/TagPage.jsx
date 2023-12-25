@@ -69,7 +69,7 @@ const TagPage = () => {
                                     user={obj.user}
                                     createdAt={obj.createdAt}
                                     viewsCount={obj.viewsCount}
-                                    commentsCount='undefined'
+                                    commentsCount={obj.comments.length}
                                     tags={obj.tags}
                                     isEditable={userData?._id === obj.user._id}
                                 />

@@ -8,12 +8,14 @@ import {useDispatch, useSelector} from "react-redux";
 import styles from './Login.module.scss';
 import { requestRegistration, selectIsAuth} from "../../redux/slices/auth";
 import {useForm} from "react-hook-form";
-import {Navigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
+import {see} from "../../utilities/myUtils";
 
 export const Registration = () => {
 
     const isAuth = useSelector(selectIsAuth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     // REACT useForm HOOK:
     const {
@@ -29,23 +31,21 @@ export const Registration = () => {
     });
 
     if (isAuth) {
-        // FIXME[SUPER EASY]: this might be refactored as UTILITY; We use the same code in Login/index.jsx as well;
-        // if the user is authorized it will be redirected to Home;
-        return <Navigate to={'/'} />
+        return navigate('/')
     }
-
-
 
     const onSubmit = async (values) => {
 
-        const data = await dispatch(requestRegistration(values));
+        try{
+            const data = await dispatch(requestRegistration(values));
 
-        if (!data.payload) {
-            return alert('Registration failed for some reason whatsoever');
+            if ('token' in data.payload) {
+                window.localStorage.setItem('token', data.payload.token);
+            }
+
         }
-
-        if ('token' in data.payload) {
-            window.localStorage.setItem('token', data.payload.token);
+        catch (e) {
+            see('Registration failed due to error' + e)
         }
     }
 

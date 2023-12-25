@@ -22,8 +22,8 @@ export const Login = () => {
         formState: {errors, isValid}
     } = useForm({
         defaultValues: {
-            email:'viorel.harabaru@gmail.com',
-            password:'standart1'
+            email:'test@email.com',
+            password:'testytest'
         },
         mode: 'all'
         //we might have to change this to onChange if the form bugs out
@@ -53,6 +53,10 @@ export const Login = () => {
 
             <Typography classes={{root: styles.title}} variant="h5">
                 Login into your account
+            </Typography>
+
+            <Typography classes={{root: styles.additionalText}} variant='p'>
+                You can use the following test account or create your own:
             </Typography>
 
             <form onSubmit={handleSubmit(onSubmit)}>
