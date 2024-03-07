@@ -22,7 +22,7 @@ export const Home = () => {
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
-          {[...Array(5)].map(() => (
+          {[...Array(2)].map(() => (
             <Post
               id={1}
               title="Roast the code #1 | Rock Paper Scissors"
