@@ -22,7 +22,6 @@ export const Home = () => {
         dispatch(fetchPosts());
     }, []);
 
-
     console.log(posts);
     return (
         <>
