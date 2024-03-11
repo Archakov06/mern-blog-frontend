@@ -24,7 +24,6 @@ export const Home = () => {
         dispatch(fetchTags());
     }, []);
 
-
     console.log(posts);
     return (
         <>
