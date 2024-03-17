@@ -36,6 +36,8 @@ export const Login = () => {
         console.log(values);
     };
 
+    console.log(errors, isValid);
+
     return (
         <Paper classes={{root: styles.root}}>
             <Typography classes={{root: styles.title}} variant="h5">
@@ -56,7 +58,7 @@ export const Login = () => {
                            helperText={errors.password?.message}
                            {...register('password', {required: 'Введите пароль'})}
                            fullWidth/>
-                <Button size="large" variant="contained" fullWidth>
+                <Button type="submit" size="large" variant="contained" fullWidth>
                     Войти
                 </Button>
             </form>
