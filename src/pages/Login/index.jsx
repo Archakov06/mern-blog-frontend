@@ -1,4 +1,5 @@
 import React from "react";
+import {useDispatch} from 'react-redux';
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
@@ -6,8 +7,13 @@ import Button from "@mui/material/Button";
 import {useForm} from 'react-hook-form';
 
 import styles from "./Login.module.scss";
+import {fetchAuth} from "../../redux/slices/auth";
 
 export const Login = () => {
+    /*
+    Нужно вытащить Диспатч
+     */
+    const dispatch = useDispatch();
 
     /*
     Теперь нужно вытащить специальный объект со свойствами\функциями
@@ -22,8 +28,8 @@ export const Login = () => {
         Изначально все параметры формы - эмейл и пароль будут пустыми
          */
         defaultValues: {
-            email: '',
-            password: '',
+            email: 'test3@test.ru',
+            password: '1234567',
         },
         mode: 'onChange',
     });
@@ -33,7 +39,11 @@ export const Login = () => {
     понял, что валидация прошла корректно
      */
     const onSubmit = (values) => {
-        console.log(values);
+        /*
+        Dispatch must to do fetch
+        for object with email and password
+         */
+        dispatch(fetchAuth(values));
     };
 
     console.log(errors, isValid);
@@ -47,14 +57,14 @@ export const Login = () => {
                 <TextField
                     className={styles.field}
                     label="E-Mail"
-                    error = {Boolean(errors.email?.message)}
+                    error={Boolean(errors.email?.message)}
                     helperText={errors.email?.message}
                     {...register('email', {required: 'Укажите почту'})}
                     fullWidth
                 />
                 <TextField className={styles.field}
                            label="Пароль"
-                           error = {Boolean(errors.password?.message)}
+                           error={Boolean(errors.password?.message)}
                            helperText={errors.password?.message}
                            {...register('password', {required: 'Введите пароль'})}
                            fullWidth/>
